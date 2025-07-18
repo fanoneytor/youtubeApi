@@ -224,6 +224,15 @@ function YouTubeSearch() {
                       {video.channelTitle}
                     </Typography>
                   </Box>
+                  <IconButton 
+                    aria-label="add to favorites"
+                    sx={{ 
+                      color: favoriteVideoIds.has(video.youtubeVideoId) ? 'red' : 'gray', 
+                    }}
+                    onClick={(event) => handleFavoriteClick(event, { id: { videoId: video.youtubeVideoId }, snippet: { title: video.title, thumbnails: { high: { url: video.thumbnailUrl } } } })}
+                  >
+                    {favoriteVideoIds.has(video.youtubeVideoId) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                  </IconButton>
                 </Box>
               ))}
             </Box>
