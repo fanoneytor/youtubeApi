@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation 
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import Register from './components/Register';
 import Login from './components/Login';
+import YouTubeSearch from './components/YouTubeSearch'; // Importar el nuevo componente
 import AuthService from './services/AuthService';
 
 function App() {
@@ -34,7 +35,10 @@ function App() {
           </Typography>
           {
             currentUser && (
-              <Button color="inherit" onClick={logOut}>Cerrar Sesión</Button>
+              <>
+                <Button color="inherit" component={Link} to="/youtube-search">Buscar Videos</Button>
+                <Button color="inherit" onClick={logOut}>Cerrar Sesión</Button>
+              </>
             )
           }
         </Toolbar>
@@ -42,6 +46,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/youtube-search" element={<YouTubeSearch />} /> {/* Nueva ruta */}
         {/* Si hay un usuario, se puede acceder a la ruta principal, de lo contrario se redirige a login */}
         <Route path="/" element={currentUser ? <Home /> : <Login />} />
       </Routes>
