@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Register from './components/Register';
 import Login from './components/Login';
 import YouTubeSearch from './components/YouTubeSearch'; 
@@ -57,6 +59,7 @@ function App() {
         {/* La ruta raíz ahora redirige a youtube-search si está autenticado, o a login si no */}
         <Route path="/" element={currentUser ? <YouTubeSearch /> : <Login />} />
       </Routes>
+      <ToastContainer />
     </Box>
   );
 }

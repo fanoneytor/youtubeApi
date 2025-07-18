@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Link as MuiLink } from '@mui/material';
 import AuthService from '../services/AuthService';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [fullname, setFullname] = useState(''); // Nuevo estado para fullname
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setMessage('');
     AuthService.register(username, email, password, fullname).then(
       (response) => {
-        setMessage(response.data.message);
+        toast.success(response.data.message);
         navigate('/login');
       },
       (error) => {
@@ -26,7 +24,7 @@ function Register() {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        setMessage(resMessage);
+        toast.error(resMessage);
       }
     );
   };
@@ -92,11 +90,7 @@ function Register() {
           >
             Registrarse
           </Button>
-          {message && (
-            <Typography color="error" variant="body2">
-              {message}
-            </Typography>
-          )}
+          
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 2 }}>
             <MuiLink component={Link} to="/login" variant="body2">
               {"¿Ya tienes una cuenta? Inicia Sesión"}

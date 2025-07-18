@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Link as MuiLink } from '@mui/material';
 import AuthService from '../services/AuthService';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setMessage('');
     AuthService.login(username, password).then(
       () => {
         navigate('/');
@@ -24,7 +23,7 @@ function Login() {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        setMessage(resMessage);
+        toast.error(resMessage);
       }
     );
   };
@@ -68,11 +67,7 @@ function Login() {
           >
             Iniciar Sesión
           </Button>
-          {message && (
-            <Typography color="error" variant="body2">
-              {message}
-            </Typography>
-          )}
+          
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 2 }}>
             <MuiLink component={Link} to="/register" variant="body2">
               {"¿No tienes una cuenta? Regístrate"}

@@ -6,11 +6,11 @@ import YouTubeService from '../services/YouTubeService';
 import FavoriteVideoService from '../services/FavoriteVideoService'; 
 import RecentlyViewedService from '../services/RecentlyViewedService'; 
 import VideoPlayer from './VideoPlayer';
+import { toast } from 'react-toastify';
 
 function YouTubeSearch() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null); 
   const [favoriteVideoIds, setFavoriteVideoIds] = useState(new Set()); 
@@ -51,7 +51,6 @@ function YouTubeSearch() {
 
   const handleSearch = async (event) => {
     event.preventDefault();
-    setMessage('');
     setResults([]);
     setSelectedVideo(null); 
     setLoading(true);
@@ -60,7 +59,7 @@ function YouTubeSearch() {
       const response = await YouTubeService.searchVideos(query);
       setResults(response.data.items || []);
       if (response.data.items && response.data.items.length === 0) {
-        setMessage("No se encontraron resultados para su búsqueda.");
+        toast.info("No se encontraron resultados para su búsqueda.");
       }
     } catch (error) {
       const resMessage =
@@ -69,10 +68,10 @@ function YouTubeSearch() {
           error.response.data.message) ||
         error.message ||
         error.toString();
-      setMessage("Error al buscar videos: " + resMessage);
+      toast.error("Error al buscar videos: " + resMessage);
     } finally {
       setLoading(false);
-    }
+    };
   };
 
   const handleVideoClick = (videoItem) => {
@@ -97,7 +96,7 @@ function YouTubeSearch() {
           newIds.delete(videoId);
           return newIds;
         });
-        setMessage("Video eliminado de favoritos.");
+        toast.info("Video eliminado de favoritos.");
       } else {
         await FavoriteVideoService.addFavoriteVideo(
           videoId,
@@ -105,7 +104,7 @@ function YouTubeSearch() {
           videoItem.snippet.thumbnails.high.url
         );
         setFavoriteVideoIds(prevIds => new Set(prevIds).add(videoId));
-        setMessage("Video añadido a favoritos.");
+        toast.success("Video añadido a favoritos.");
       }
     } catch (error) {
       const resMessage =
@@ -114,7 +113,7 @@ function YouTubeSearch() {
           error.response.data.message) ||
         error.message ||
         error.toString();
-      setMessage("Error al gestionar favoritos: " + resMessage);
+      toast.error("Error al gestionar favoritos: " + resMessage);
     }
   };
 
@@ -146,11 +145,7 @@ function YouTubeSearch() {
           </Button>
         </Box>
 
-        {message && (
-          <Typography color="text.secondary" variant="body1" sx={{ mt: 4 }}>
-            {message}
-          </Typography>
-        )}
+        
 
         {selectedVideo && (
           <Grid container spacing={4} sx={{ mt: 4, width: '100%' }} ref={videoPlayerRef}> 
