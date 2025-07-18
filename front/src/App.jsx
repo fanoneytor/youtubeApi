@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation 
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import Register from './components/Register';
 import Login from './components/Login';
-import YouTubeSearch from './components/YouTubeSearch'; // Importar el nuevo componente
+import YouTubeSearch from './components/YouTubeSearch'; 
+import FavoriteVideos from './components/FavoriteVideos'; // Importar el nuevo componente
 import AuthService from './services/AuthService';
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
     if (user) {
       setCurrentUser(user);
     } else if (location.pathname !== '/register') {
-      navigate('/login'); // Redirigir a login si no hay usuario y no estamos en la página de registro
+      navigate('/login'); 
     }
   }, [navigate, location.pathname]);
 
@@ -37,6 +38,7 @@ function App() {
             currentUser && (
               <>
                 <Button color="inherit" component={Link} to="/youtube-search">Buscar Videos</Button>
+                <Button color="inherit" component={Link} to="/favorites">Mis Favoritos</Button> {/* Nuevo botón */}
                 <Button color="inherit" onClick={logOut}>Cerrar Sesión</Button>
               </>
             )
@@ -46,7 +48,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/youtube-search" element={<YouTubeSearch />} /> {/* Nueva ruta */}
+        <Route path="/youtube-search" element={<YouTubeSearch />} /> 
+        <Route path="/favorites" element={<FavoriteVideos />} /> {/* Nueva ruta */}
         {/* Si hay un usuario, se puede acceder a la ruta principal, de lo contrario se redirige a login */}
         <Route path="/" element={currentUser ? <Home /> : <Login />} />
       </Routes>
