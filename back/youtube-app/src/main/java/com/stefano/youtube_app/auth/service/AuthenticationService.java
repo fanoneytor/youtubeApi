@@ -28,7 +28,7 @@ public class AuthenticationService {
             throw new UserAlreadyExistsException("El nombre de usuario ya está en uso");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("El correo electrónico ya está registrado");
+            throw new UserAlreadyExistsException("El correo electrónico ya está registrado.");
         }
 
         var user = User.builder()

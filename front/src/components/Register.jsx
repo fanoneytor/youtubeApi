@@ -9,10 +9,48 @@ function Register() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [fullname, setFullname] = useState(''); // Nuevo estado para fullname
+  const [passwordError, setPasswordError] = useState('');
   const navigate = useNavigate();
+
+  const validatePassword = (pwd) => {
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(pwd);
+    const hasLowercase = /[a-z]/.test(pwd);
+    const hasDigit = /[0-9]/.test(pwd);
+    const hasSpecialChar = /[!@#$%^&*]/.test(pwd);
+
+    if (pwd.length < minLength) {
+      return `La contraseña debe tener al menos ${minLength} caracteres.`;
+    }
+    if (!hasUppercase) {
+      return 'La contraseña debe contener al menos una letra mayúscula.';
+    }
+    if (!hasLowercase) {
+      return 'La contraseña debe contener al menos una letra minúscula.';
+    }
+    if (!hasDigit) {
+      return 'La contraseña debe contener al menos un número.';
+    }
+    if (!hasSpecialChar) {
+      return 'La contraseña debe contener al menos un carácter especial (!@#$%^&*).';
+    }
+    return ''; // No error
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordError(validatePassword(newPassword));
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const pwdValidationMessage = validatePassword(password);
+    if (pwdValidationMessage) {
+      setPasswordError(pwdValidationMessage);
+      return;
+    }
+
     AuthService.register(username, email, password, fullname).then(
       (response) => {
         toast.success(response.data.message);
@@ -93,7 +131,9 @@ function Register() {
             id="password"
             autoComplete="new-password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
+            error={!!passwordError}
+            helperText={passwordError}
           />
           <Button
             type="submit"
