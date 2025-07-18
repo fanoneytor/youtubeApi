@@ -268,32 +268,12 @@ function YouTubeSearch() {
                       image={item.snippet.thumbnails.high.url}
                       alt={item.snippet.title}
                       sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
                         borderRadius: '4px',
                       }}
                     />
-                    <IconButton 
-                      aria-label="add to favorites"
-                      sx={{ 
-                        position: 'absolute', 
-                        top: 4, 
-                        right: 4, 
-                        color: 'white', 
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-                        '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
-                        borderRadius: '50%', 
-                        padding: '4px', 
-                        fontSize: 16, 
-                      }}
-                      onClick={(event) => handleFavoriteClick(event, item)}
-                    >
-                      {favoriteVideoIds.has(item.id.videoId) ? <FavoriteIcon sx={{ fontSize: 16 }} /> : <FavoriteBorderIcon sx={{ fontSize: 16 }} />}
-                    </IconButton>
                   </Box>
                   <Box sx={{ flexGrow: 1 }}>
                     <Typography variant="subtitle1" noWrap> 
@@ -306,6 +286,15 @@ function YouTubeSearch() {
                       {item.snippet.description}
                     </Typography>
                   </Box>
+                  <IconButton 
+                    aria-label="add to favorites"
+                    sx={{ 
+                      color: favoriteVideoIds.has(item.id.videoId) ? 'red' : 'gray', 
+                    }}
+                    onClick={(event) => handleFavoriteClick(event, item)}
+                  >
+                    {favoriteVideoIds.has(item.id.videoId) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                  </IconButton>
                 </Box>
               ))}
             </Box>
