@@ -25,10 +25,10 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new UserAlreadyExistsException("Username already taken");
+            throw new UserAlreadyExistsException("El nombre de usuario ya está en uso");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("Email already registered");
+            throw new UserAlreadyExistsException("El correo electrónico ya está registrado");
         }
 
         var user = User.builder()

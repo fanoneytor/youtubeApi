@@ -19,15 +19,27 @@ function Register() {
         navigate('/login');
       },
       (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        toast.error(resMessage);
-      }
-    );
+          let resMessage = '';
+          if (error.response && error.response.data) {
+            if (typeof error.response.data === 'string') {
+              resMessage = error.response.data; // UserAlreadyExistsException message
+            } else if (error.response.data.message) {
+              resMessage = error.response.data.message; // Other backend messages
+            } else if (error.response.data) {
+              // Handle validation errors (MethodArgumentNotValidException)
+              const errors = error.response.data;
+              for (const key in errors) {
+                if (errors.hasOwnProperty(key)) {
+                  resMessage += `${errors[key]} `; // Concatenate all validation messages
+                }
+              }
+            }
+          } else {
+            resMessage = error.message || error.toString();
+          }
+          toast.error(resMessage.trim());
+        }
+      );
   };
 
   return (
