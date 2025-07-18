@@ -4,7 +4,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import YouTubeService from '../services/YouTubeService';
 import FavoriteVideoService from '../services/FavoriteVideoService'; 
-import RecentlyViewedService from '../services/RecentlyViewedService'; // Importar el servicio
+import RecentlyViewedService from '../services/RecentlyViewedService'; 
 import VideoPlayer from './VideoPlayer';
 
 function YouTubeSearch() {
@@ -14,7 +14,7 @@ function YouTubeSearch() {
   const [loading, setLoading] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null); 
   const [favoriteVideoIds, setFavoriteVideoIds] = useState(new Set()); 
-  const [recentlyViewed, setRecentlyViewed] = useState([]); // Nuevo estado para videos vistos recientemente
+  const [recentlyViewed, setRecentlyViewed] = useState([]); 
 
   useEffect(() => {
     const loadFavoriteVideos = async () => {
@@ -28,7 +28,6 @@ function YouTubeSearch() {
     };
     loadFavoriteVideos();
 
-    // Cargar videos vistos recientemente
     setRecentlyViewed(RecentlyViewedService.getRecentlyViewedVideos());
   }, []);
 
@@ -130,12 +129,14 @@ function YouTubeSearch() {
         )}
 
         {selectedVideo && (
-          <Grid container spacing={4} sx={{ mt: 4, width: '100%' }}>
+          <Grid container spacing={4} sx={{ mt: 4, width: '100%' }}> 
             <Grid item xs={12} md={8}> 
               <VideoPlayer 
                 videoId={selectedVideo.id.videoId} 
                 videoTitle={selectedVideo.snippet.title}
                 videoThumbnailUrl={selectedVideo.snippet.thumbnails.high.url}
+                videoChannelTitle={selectedVideo.snippet.channelTitle} 
+                videoDescription={selectedVideo.snippet.description} 
               />
             </Grid>
             <Grid item xs={12} md={4}> 
@@ -160,9 +161,9 @@ function YouTubeSearch() {
             <Typography component="h2" variant="h5" gutterBottom>
               Videos Vistos Recientemente
             </Typography>
-            <Grid container spacing={4}>
+            <Grid container spacing={2} wrap="nowrap" sx={{ overflowX: 'auto', pb: 1 }}> {/* Ajuste para desplazamiento horizontal */}
               {recentlyViewed.map((video) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={video.youtubeVideoId}> 
+                <Grid item xs={4} key={video.youtubeVideoId}> {/* xs={4} para 3 columnas en una fila */}
                   <Card
                     elevation={4} 
                     sx={{
@@ -172,10 +173,11 @@ function YouTubeSearch() {
                       transition: 'transform 0.2s',
                       '&:hover': { transform: 'scale(1.03)' },
                       cursor: 'pointer', 
+                      minHeight: 300, 
                     }}
-                    onClick={() => handleVideoClick({ id: { videoId: video.youtubeVideoId }, snippet: { title: video.title, channelTitle: '', description: '', thumbnails: { high: { url: video.thumbnailUrl } } } })} 
+                    onClick={() => handleVideoClick({ id: { videoId: video.youtubeVideoId }, snippet: { title: video.title, channelTitle: video.channelTitle, description: video.description, thumbnails: { high: { url: video.thumbnailUrl } } } })} 
                   >
-                    <Box sx={{ position: 'relative', width: '100%', paddingTop: '40%' }}> 
+                    <Box sx={{ position: 'relative', width: '100%', paddingTop: '56.25%' }}> 
                       <CardMedia
                         component="img"
                         image={video.thumbnailUrl}
@@ -203,7 +205,7 @@ function YouTubeSearch() {
         )}
 
         {/* Sección de Resultados de Búsqueda */}
-        {results.length > 0 && ( /* Condición para mostrar el título */
+        {results.length > 0 && ( 
           <Box sx={{ mt: 8, width: '100%' }}>
             <Typography component="h2" variant="h5" gutterBottom>
               Resultados de Búsqueda
@@ -220,10 +222,11 @@ function YouTubeSearch() {
                       transition: 'transform 0.2s',
                       '&:hover': { transform: 'scale(1.03)' },
                       cursor: 'pointer', 
+                      minHeight: 300, 
                     }}
                     onClick={() => handleVideoClick(item)} 
                   >
-                    <Box sx={{ position: 'relative', width: '100%', paddingTop: '40%' }}> 
+                    <Box sx={{ position: 'relative', width: '100%', paddingTop: '56.25%' }}> 
                       <CardMedia
                         component="img"
                         image={item.snippet.thumbnails.high.url}

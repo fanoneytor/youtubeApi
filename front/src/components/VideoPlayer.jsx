@@ -1,9 +1,9 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 import { Box } from '@mui/material';
-import RecentlyViewedService from '../services/RecentlyViewedService'; // Importar el servicio
+import RecentlyViewedService from '../services/RecentlyViewedService'; 
 
-function VideoPlayer({ videoId, videoTitle, videoThumbnailUrl }) {
+function VideoPlayer({ videoId, videoTitle, videoThumbnailUrl, videoChannelTitle, videoDescription }) {
   const opts = {
     playerVars: {
       autoplay: 1, 
@@ -14,13 +14,12 @@ function VideoPlayer({ videoId, videoTitle, videoThumbnailUrl }) {
   };
 
   const onReady = (event) => {
-    // Acceder al reproductor
-    // event.target.pauseVideo();
-    // Guardar el video en la lista de vistos recientemente
     RecentlyViewedService.addRecentlyViewedVideo({
       youtubeVideoId: videoId,
       title: videoTitle,
       thumbnailUrl: videoThumbnailUrl,
+      channelTitle: videoChannelTitle, // Guardar el título del canal
+      description: videoDescription,   // Guardar la descripción
     });
   };
 
@@ -30,7 +29,7 @@ function VideoPlayer({ videoId, videoTitle, videoThumbnailUrl }) {
         videoId={videoId}
         opts={opts}
         className="youtube-iframe" 
-        onReady={onReady} // Añadir el evento onReady
+        onReady={onReady} 
       />
     </Box>
   );

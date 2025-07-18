@@ -1,5 +1,5 @@
 const RECENTLY_VIEWED_KEY = 'recentlyViewedVideos';
-const MAX_RECENTLY_VIEWED = 10; // Limitar a los últimos 10 videos
+const MAX_RECENTLY_VIEWED = 3; // Limitar a los últimos 3 videos
 
 const getRecentlyViewedVideos = () => {
   const videos = localStorage.getItem(RECENTLY_VIEWED_KEY);
