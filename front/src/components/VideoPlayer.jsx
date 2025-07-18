@@ -3,7 +3,7 @@ import YouTube from 'react-youtube';
 import { Box } from '@mui/material';
 import RecentlyViewedService from '../services/RecentlyViewedService'; 
 
-function VideoPlayer({ videoId, videoTitle, videoThumbnailUrl, videoChannelTitle, videoDescription }) {
+function VideoPlayer({ videoId, videoTitle, videoThumbnailUrl, videoChannelTitle, videoDescription, onVideoPlayed }) {
   const opts = {
     playerVars: {
       autoplay: 1, 
@@ -18,13 +18,16 @@ function VideoPlayer({ videoId, videoTitle, videoThumbnailUrl, videoChannelTitle
       youtubeVideoId: videoId,
       title: videoTitle,
       thumbnailUrl: videoThumbnailUrl,
-      channelTitle: videoChannelTitle, // Guardar el título del canal
-      description: videoDescription,   // Guardar la descripción
+      channelTitle: videoChannelTitle, 
+      description: videoDescription,   
     });
+    if (onVideoPlayed) {
+      onVideoPlayed(); // Notificar al padre que el video se ha añadido a la lista de recientes
+    }
   };
 
   return (
-    <Box sx={{ position: 'relative', width: '100%', paddingTop: '56.25%' }}> 
+    <Box sx={{ width: 640, height: 360, overflow: 'hidden', position: 'relative' }}> 
       <YouTube
         videoId={videoId}
         opts={opts}
