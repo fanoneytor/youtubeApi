@@ -23,9 +23,14 @@ const addRecentlyViewedVideo = (video) => {
   localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(videos));
 };
 
+const clearRecentlyViewedVideos = () => {
+  localStorage.removeItem(RECENTLY_VIEWED_KEY);
+};
+
 const RecentlyViewedService = {
   getRecentlyViewedVideos,
   addRecentlyViewedVideo,
+  clearRecentlyViewedVideos,
 };
 
 export default RecentlyViewedService;

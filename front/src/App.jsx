@@ -38,7 +38,7 @@ function App() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            YouTube App
+            YouTube App {currentUser && `- ${currentUser.username}`}
           </Typography>
           {
             currentUser && (

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import RecentlyViewedService from './RecentlyViewedService';
 
 const API_URL = 'http://localhost:8080/api/v1/auth/';
 
@@ -26,6 +27,7 @@ const login = (username, password) => {
 
 const logout = () => {
   localStorage.removeItem('user');
+  RecentlyViewedService.clearRecentlyViewedVideos();
 };
 
 const getCurrentUser = () => {
