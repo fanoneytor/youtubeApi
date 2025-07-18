@@ -23,13 +23,7 @@ function FavoriteVideos() {
         setMessage("No tienes videos favoritos guardados.");
       }
     } catch (error) {
-      const resMessage =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      setMessage("Error al cargar videos favoritos: " + resMessage);
+      console.error("Error al cargar videos favoritos:", error);
     } finally {
       setLoading(false);
     }
@@ -126,10 +120,19 @@ function FavoriteVideos() {
                   />
                   <IconButton 
                     aria-label="remove from favorites"
-                    sx={{ position: 'absolute', top: 8, right: 8, color: 'white' }}
+                    sx={{ 
+                      position: 'absolute', 
+                      top: 8, 
+                      right: 8, 
+                      color: 'white', 
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
+                      '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
+                      borderRadius: '50%', // Forma circular
+                      padding: '6px', // Espaciado interno
+                    }}
                     onClick={(event) => handleRemoveFavorite(event, video.youtubeVideoId)}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon sx={{ fontSize: 20 }} />
                   </IconButton>
                 </Box>
                 <CardContent sx={{ flexGrow: 1 }}>

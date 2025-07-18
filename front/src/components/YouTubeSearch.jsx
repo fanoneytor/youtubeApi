@@ -177,10 +177,19 @@ function YouTubeSearch() {
                   />
                   <IconButton 
                     aria-label="add to favorites"
-                    sx={{ position: 'absolute', top: 8, right: 8, color: 'white' }}
+                    sx={{ 
+                      position: 'absolute', 
+                      top: 8, 
+                      right: 8, 
+                      color: 'white', 
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
+                      '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
+                      borderRadius: '50%', // Forma circular
+                      padding: '6px', // Espaciado interno
+                    }}
                     onClick={(event) => handleFavoriteClick(event, item)}
                   >
-                    {favoriteVideoIds.has(item.id.videoId) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                    {favoriteVideoIds.has(item.id.videoId) ? <FavoriteIcon sx={{ fontSize: 20 }} /> : <FavoriteBorderIcon sx={{ fontSize: 20 }} />}
                   </IconButton>
                 </Box>
                 <CardContent sx={{ flexGrow: 1 }}>
