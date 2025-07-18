@@ -3,7 +3,8 @@ import { TextField, Button, Typography, Container, Box, Card, CardContent, CardM
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import YouTubeService from '../services/YouTubeService';
-import FavoriteVideoService from '../services/FavoriteVideoService'; // Importar el nuevo servicio
+import FavoriteVideoService from '../services/FavoriteVideoService'; 
+import RecentlyViewedService from '../services/RecentlyViewedService'; // Importar el servicio
 import VideoPlayer from './VideoPlayer';
 
 function YouTubeSearch() {
@@ -12,10 +13,10 @@ function YouTubeSearch() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null); 
-  const [favoriteVideoIds, setFavoriteVideoIds] = useState(new Set()); // Nuevo estado para IDs de videos favoritos
+  const [favoriteVideoIds, setFavoriteVideoIds] = useState(new Set()); 
+  const [recentlyViewed, setRecentlyViewed] = useState([]); // Nuevo estado para videos vistos recientemente
 
   useEffect(() => {
-    // Cargar videos favoritos al iniciar el componente
     const loadFavoriteVideos = async () => {
       try {
         const response = await FavoriteVideoService.getFavoriteVideos();
@@ -26,6 +27,9 @@ function YouTubeSearch() {
       }
     };
     loadFavoriteVideos();
+
+    // Cargar videos vistos recientemente
+    setRecentlyViewed(RecentlyViewedService.getRecentlyViewedVideos());
   }, []);
 
   const handleSearch = async (event) => {
@@ -59,7 +63,7 @@ function YouTubeSearch() {
   };
 
   const handleFavoriteClick = async (event, videoItem) => {
-    event.stopPropagation(); // Evitar que el clic en el icono active la reproducción del video
+    event.stopPropagation(); 
     const videoId = videoItem.id.videoId;
 
     try {
@@ -128,7 +132,11 @@ function YouTubeSearch() {
         {selectedVideo && (
           <Grid container spacing={4} sx={{ mt: 4, width: '100%' }}>
             <Grid item xs={12} md={8}> 
-              <VideoPlayer videoId={selectedVideo.id.videoId} />
+              <VideoPlayer 
+                videoId={selectedVideo.id.videoId} 
+                videoTitle={selectedVideo.snippet.title}
+                videoThumbnailUrl={selectedVideo.snippet.thumbnails.high.url}
+              />
             </Grid>
             <Grid item xs={12} md={4}> 
               <Box sx={{ p: 2 }}>
@@ -146,64 +154,120 @@ function YouTubeSearch() {
           </Grid>
         )}
 
-        <Grid container spacing={4} sx={{ mt: 4 }}>
-          {results.map((item) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={item.id.videoId || item.id.channelId || item.id.playlistId}> 
-              <Card
-                elevation={4} 
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'transform 0.2s',
-                  '&:hover': { transform: 'scale(1.03)' },
-                  cursor: 'pointer', 
-                }}
-                onClick={() => handleVideoClick(item)} 
-              >
-                <Box sx={{ position: 'relative', width: '100%', paddingTop: '40%' }}> 
-                  <CardMedia
-                    component="img"
-                    image={item.snippet.thumbnails.high.url}
-                    alt={item.snippet.title}
+        {/* Sección de Videos Vistos Recientemente */}
+        {recentlyViewed.length > 0 && (
+          <Box sx={{ mt: 8, width: '100%' }}>
+            <Typography component="h2" variant="h5" gutterBottom>
+              Videos Vistos Recientemente
+            </Typography>
+            <Grid container spacing={4}>
+              {recentlyViewed.map((video) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={video.youtubeVideoId}> 
+                  <Card
+                    elevation={4} 
                     sx={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
                       height: '100%',
-                      objectFit: 'cover',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      transition: 'transform 0.2s',
+                      '&:hover': { transform: 'scale(1.03)' },
+                      cursor: 'pointer', 
                     }}
-                  />
-                  <IconButton 
-                    aria-label="add to favorites"
-                    sx={{ 
-                      position: 'absolute', 
-                      top: 8, 
-                      right: 8, 
-                      color: 'white', 
-                      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
-                      '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
-                      borderRadius: '50%', // Forma circular
-                      padding: '6px', // Espaciado interno
-                    }}
-                    onClick={(event) => handleFavoriteClick(event, item)}
+                    onClick={() => handleVideoClick({ id: { videoId: video.youtubeVideoId }, snippet: { title: video.title, channelTitle: '', description: '', thumbnails: { high: { url: video.thumbnailUrl } } } })} 
                   >
-                    {favoriteVideoIds.has(item.id.videoId) ? <FavoriteIcon sx={{ fontSize: 20 }} /> : <FavoriteBorderIcon sx={{ fontSize: 20 }} />}
-                  </IconButton>
-                </Box>
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="subtitle1" component="div" noWrap> 
-                    {item.snippet.title}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}> 
-                    {item.snippet.description}
-                  </Typography>
-                </CardContent>
-              </Card>
+                    <Box sx={{ position: 'relative', width: '100%', paddingTop: '40%' }}> 
+                      <CardMedia
+                        component="img"
+                        image={video.thumbnailUrl}
+                        alt={video.title}
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    </Box>
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography gutterBottom variant="subtitle1" component="div" noWrap> 
+                        {video.title}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
+          </Box>
+        )}
+
+        {/* Sección de Resultados de Búsqueda */}
+        {results.length > 0 && ( /* Condición para mostrar el título */
+          <Box sx={{ mt: 8, width: '100%' }}>
+            <Typography component="h2" variant="h5" gutterBottom>
+              Resultados de Búsqueda
+            </Typography>
+            <Grid container spacing={4}>
+              {results.map((item) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={item.id.videoId || item.id.channelId || item.id.playlistId}> 
+                  <Card
+                    elevation={4} 
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      transition: 'transform 0.2s',
+                      '&:hover': { transform: 'scale(1.03)' },
+                      cursor: 'pointer', 
+                    }}
+                    onClick={() => handleVideoClick(item)} 
+                  >
+                    <Box sx={{ position: 'relative', width: '100%', paddingTop: '40%' }}> 
+                      <CardMedia
+                        component="img"
+                        image={item.snippet.thumbnails.high.url}
+                        alt={item.snippet.title}
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                      <IconButton 
+                        aria-label="add to favorites"
+                        sx={{ 
+                          position: 'absolute', 
+                          top: 8, 
+                          right: 8, 
+                          color: 'white', 
+                          backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+                          '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
+                          borderRadius: '50%', 
+                          padding: '6px', 
+                        }}
+                        onClick={(event) => handleFavoriteClick(event, item)}
+                      >
+                        {favoriteVideoIds.has(item.id.videoId) ? <FavoriteIcon sx={{ fontSize: 20 }} /> : <FavoriteBorderIcon sx={{ fontSize: 20 }} />}
+                      </IconButton>
+                    </Box>
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography gutterBottom variant="subtitle1" component="div" noWrap> 
+                        {item.snippet.title}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}> 
+                        {item.snippet.description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )}
       </Box>
     </Container>
   );

@@ -4,7 +4,7 @@ import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import Register from './components/Register';
 import Login from './components/Login';
 import YouTubeSearch from './components/YouTubeSearch'; 
-import FavoriteVideos from './components/FavoriteVideos'; // Importar el nuevo componente
+import FavoriteVideos from './components/FavoriteVideos'; 
 import AuthService from './services/AuthService';
 
 function App() {
@@ -16,6 +16,10 @@ function App() {
     const user = AuthService.getCurrentUser();
     if (user) {
       setCurrentUser(user);
+      // Si el usuario está autenticado y está en la ruta raíz o login, redirigir a la búsqueda
+      if (location.pathname === '/' || location.pathname === '/login') {
+        navigate('/youtube-search'); 
+      }
     } else if (location.pathname !== '/register') {
       navigate('/login'); 
     }
@@ -38,7 +42,7 @@ function App() {
             currentUser && (
               <>
                 <Button color="inherit" component={Link} to="/youtube-search">Buscar Videos</Button>
-                <Button color="inherit" component={Link} to="/favorites">Mis Favoritos</Button> {/* Nuevo botón */}
+                <Button color="inherit" component={Link} to="/favorites">Mis Favoritos</Button> 
                 <Button color="inherit" onClick={logOut}>Cerrar Sesión</Button>
               </>
             )
@@ -49,9 +53,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/youtube-search" element={<YouTubeSearch />} /> 
-        <Route path="/favorites" element={<FavoriteVideos />} /> {/* Nueva ruta */}
-        {/* Si hay un usuario, se puede acceder a la ruta principal, de lo contrario se redirige a login */}
-        <Route path="/" element={currentUser ? <Home /> : <Login />} />
+        <Route path="/favorites" element={<FavoriteVideos />} /> 
+        {/* La ruta raíz ahora redirige a youtube-search si está autenticado, o a login si no */}
+        <Route path="/" element={currentUser ? <YouTubeSearch /> : <Login />} />
       </Routes>
     </Box>
   );
